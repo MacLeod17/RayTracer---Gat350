@@ -2,7 +2,7 @@
 #include "Sphere.h"
 #include "Tracer.h"
 
-void Tracer::Trace(Image& image, std::vector<Geometry*>& scene)
+void Tracer::Trace(Image& image, Scene& scene)
 {
 	float aspectRatio = image.width() / (float)image.height();
 
@@ -20,13 +20,11 @@ void Tracer::Trace(Image& image, std::vector<Geometry*>& scene)
 			direction = glm::normalize(direction);
 
 			ray r{ m_origin, direction };
-			
-			for (auto geometry : scene)
+			raycastHit hit;
+
+			if (scene.Trace(r, 0, FLT_MAX, hit))
 			{
-				if (geometry->Hit(r))
-				{
-					image.SetPoint({ x, y }, dynamic_cast<Sphere*>(geometry)->m_color);
-				}
+				image.SetPoint({ x, y }, hit.normal);
 			}
 		}
 	}

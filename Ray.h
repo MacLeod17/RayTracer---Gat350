@@ -1,6 +1,13 @@
 #pragma once
 #include "Types.h"
 
+struct raycastHit
+{
+	float t{ 0 };
+	glm::vec3 point{ 0, 0, 0 };
+	glm::vec3 normal{ 0, 0, 0 };
+};
+
 struct ray
 {
 	glm::vec3 origin{ 0, 0, 0 };

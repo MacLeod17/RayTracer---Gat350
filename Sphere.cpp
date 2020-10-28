@@ -1,6 +1,6 @@
 #include "Sphere.h"
 
-bool Sphere::Hit(const ray& r)
+bool Sphere::Hit(const ray& r, float tMin, float tMax, raycastHit& hit)
 {
     glm::vec3 oc = r.origin - m_center;
     float a = glm::dot(r.direction, r.direction);
@@ -10,5 +10,27 @@ bool Sphere::Hit(const ray& r)
     //b^2 - 4ac
     float discriminant = (b * b) - (4 * a * c);
 
-    return (discriminant >= 0);
+    if (discriminant >= 0)
+    {
+        float t = (-b - sqrt(discriminant)) / (2.0f * a);
+        if (t >= tMin && t <= tMax)
+        {
+            hit.t = t;
+            hit.point = r.pointAt(hit.t);
+            hit.normal = (hit.point - m_center) / m_radius;
+
+            return true;
+        }
+        t = (-b + sqrt(discriminant)) / (2.0f * a);
+        if (t >= tMin && t <= tMax)
+        {
+            hit.t = t;
+            hit.point = r.pointAt(hit.t);
+            hit.normal = (hit.point - m_center) / m_radius;
+
+            return true;
+        }
+    }
+
+    return false;
 }
