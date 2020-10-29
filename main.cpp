@@ -2,6 +2,7 @@
 #include "Canvas.h"
 #include "Image.h"
 #include "Tracer.h"
+#include "Plane.h"
 #include "Scene.h"
 #include "Sphere.h"
 #include "SDL.h"
@@ -41,8 +42,9 @@ int main(int, char**)
 	scene.Add(new Sphere{ { 2, 2, -4 }, 1.0f, { 1, 0, 0} });
 	scene.Add(new Sphere{ { 0, 0, -6 }, 2.0f, { 0, 1, 0} });
 	scene.Add(new Sphere{ { -2, -2, -3 }, 1.0f, { 0, 0, 1} });
+	scene.Add(new Plane{ {0, -2, 0}, {0, 1, 0}, { 1, 0, 1 } });
 
-	image.Clear({ 1, 1, 0 });
+	image.Clear({ 0, 0, 0 });
 	tracer.Trace(image, scene);
 
 	bool quit = false;
@@ -65,7 +67,7 @@ int main(int, char**)
 			break;
 		}
 
-		canvas.Clear({ 1, 1, 0 });
+		canvas.Clear({ 0, 0, 0 });
 		
 		canvas.DrawImage(image);
 		canvas.Update();

@@ -8,7 +8,7 @@ class Geometry;
 class Scene
 {
 public:
-	bool Trace(const ray& r, float tMin, float tMax, raycastHit& hit);
+	glm::vec3 Trace(const ray& r, float tMin, float tMax, raycastHit& hit);
 	void Add(Geometry* geometry);
 
 protected:

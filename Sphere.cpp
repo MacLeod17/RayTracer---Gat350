@@ -13,7 +13,7 @@ bool Sphere::Hit(const ray& r, float tMin, float tMax, raycastHit& hit)
     if (discriminant >= 0)
     {
         float t = (-b - sqrt(discriminant)) / (2.0f * a);
-        if (t >= tMin && t <= tMax)
+        if (t > tMin && t < tMax)
         {
             hit.t = t;
             hit.point = r.pointAt(hit.t);
@@ -22,7 +22,7 @@ bool Sphere::Hit(const ray& r, float tMin, float tMax, raycastHit& hit)
             return true;
         }
         t = (-b + sqrt(discriminant)) / (2.0f * a);
-        if (t >= tMin && t <= tMax)
+        if (t > tMin && t < tMax)
         {
             hit.t = t;
             hit.point = r.pointAt(hit.t);

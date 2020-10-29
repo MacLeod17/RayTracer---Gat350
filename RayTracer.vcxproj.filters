@@ -29,6 +29,9 @@
     <ClCompile Include="Scene.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ray.h">
@@ -53,6 +56,12 @@
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.h">
       <Filter>Sources</Filter>
     </ClInclude>
   </ItemGroup>
