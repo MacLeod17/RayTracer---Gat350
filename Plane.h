@@ -6,11 +6,11 @@
 class Plane : public Geometry
 {
 public:
-	Plane(const glm::vec3& center, const glm::vec3& normal, const glm::vec3& color) :
+	Plane(const glm::vec3& center, const glm::vec3& normal, Material* material) :
+		Geometry{ material },
 		m_center{ center },
 		m_normal{ normal }
 	{
-		m_color = color;
 	}
 
 	bool Hit(const ray& r, float tMin, float tMax, raycastHit& hit) override;

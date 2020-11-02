@@ -2,6 +2,7 @@
 #include "Canvas.h"
 #include "Image.h"
 #include "Tracer.h"
+#include "Material.h"
 #include "Plane.h"
 #include "Scene.h"
 #include "Sphere.h"
@@ -13,6 +14,8 @@ int main(int, char**)
 {
 	const int width = 800;
 	const int height = 600;
+	const int samples = 20;
+	const int depth = 20;
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
@@ -35,14 +38,19 @@ int main(int, char**)
 		return 1;
 	}
 
-	Canvas canvas(renderer, width, height);
-	Image image(width, height);
-	Tracer tracer;
+	Canvas canvas{ renderer, width, height };
+	Image image{ width, height };
+	Tracer tracer{ samples, depth };
 	Scene scene;
-	scene.Add(new Sphere{ { 2, 2, -4 }, 1.0f, { 1, 0, 0} });
-	scene.Add(new Sphere{ { 0, 0, -6 }, 2.0f, { 0, 1, 0} });
-	scene.Add(new Sphere{ { -2, -2, -3 }, 1.0f, { 0, 0, 1} });
-	scene.Add(new Plane{ {0, -2, 0}, {0, 1, 0}, { 1, 0, 1 } });
+	scene.Add(new Sphere{ { 2, 2, -4 }, 1, new Lambertian{ { 1, 1, 0 } } });
+	scene.Add(new Sphere{ { -2, 2, -4 }, 1, new Lambertian{ { 0, 1, 0.5f } } });
+	scene.Add(new Sphere{ { 5, 2, -4 }, 1.2f, new Metal{ { 1, 0, 1 }, 0.5f } });
+	scene.Add(new Sphere{ { 0, 0, -6 }, 2, new Metal{ { 0, 1, 1 }, 0.0f } });
+
+	//scene.Add(new Sphere{ { 2, 2, -4 }, 1.0f, new Lambertian{ glm::vec3{0, 1, 0} } });
+	//scene.Add(new Sphere{ { 0, 0, -6 }, 2.0f, new Lambertian{ glm::vec3{1, 0, 1} } });
+	//scene.Add(new Sphere{ { -2, -2, -3 }, 1.0f, new Lambertian{ glm::vec3{1, 1, 1} } });
+	scene.Add(new Plane{ {0, -2, 0}, {0, 1, 0}, new Lambertian{ glm::vec3{0.5f, 0.5f, 0.5f} } });
 
 	image.Clear({ 0, 0, 0 });
 	tracer.Trace(image, scene);

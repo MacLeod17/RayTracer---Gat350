@@ -32,6 +32,9 @@
     <ClCompile Include="Plane.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ray.h">
@@ -62,6 +65,9 @@
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="Math.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
       <Filter>Sources</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "Geometry.h"
+#include "Material.h"
 #include "Math.h"
 
 glm::vec3 Scene::Trace(const ray& r, float tMin, float tMax, raycastHit& hit)
@@ -19,10 +20,17 @@ glm::vec3 Scene::Trace(const ray& r, float tMin, float tMax, raycastHit& hit)
 
     if (rayHit)
     {
-        glm::vec3 target = hit.point + hit.normal + randomInUnitSphere();
-        glm::vec3 direction = glm::normalize(target - hit.point);
-        ray newRay{ hit.point, direction };
-        return { Trace(newRay, tMin, tMax, hit) * 0.5f };
+        ray scattered;
+        glm::vec3 attenuation;
+
+        if (hit.material->Scatter(r, hit, attenuation, scattered))
+        {
+            return attenuation * Trace(scattered, tMin, tMax, hit);
+        }
+        else
+        {
+            return { 0, 0, 0 };
+        }
     }
     else
     {
