@@ -3,7 +3,7 @@
 #include "Sphere.h"
 #include "Tracer.h"
 
-void Tracer::Trace(Image& image, Scene& scene)
+void Tracer::Trace(Image& image, Scene& scene, Camera& camera)
 {
 	float aspectRatio = image.width() / (float)image.height();
 
@@ -24,7 +24,11 @@ void Tracer::Trace(Image& image, Scene& scene)
 				direction.y /= aspectRatio;
 				direction = glm::normalize(direction);
 
-				ray r{ m_origin, direction };
+				//ray r{ m_origin, direction };
+				glm::vec2 viewport = camera.ScreenToViewport({ x + random01(), y + random01() });
+				viewport.y = 1 - (viewport.y);
+				ray r = camera.ViewportToRay(viewport);
+
 				raycastHit hit;
 
 				color += (scene.Trace(r, 0.001f, FLT_MAX, hit));

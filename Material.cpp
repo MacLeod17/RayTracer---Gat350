@@ -15,6 +15,7 @@ bool Lambertian::Scatter(const ray& r, const raycastHit& hit, glm::vec3& attenua
 bool Metal::Scatter(const ray& r, const raycastHit& hit, glm::vec3& attenuation, ray& scattered) const
 {
     glm::vec3 reflected = reflect(glm::normalize(r.direction), hit.normal);
+
     scattered = ray{ hit.point, reflected + m_fuzz * randomInUnitSphere() };
     attenuation = m_albedo;
 
