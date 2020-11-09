@@ -3,6 +3,7 @@
 #include "Canvas.h"
 #include "Image.h"
 #include "Tracer.h"
+#include "Math.h"
 #include "Material.h"
 #include "Plane.h"
 #include "Scene.h"
@@ -15,8 +16,14 @@ int main(int, char**)
 {
 	const int width = 800;
 	const int height = 600;
-	const int samples = 5; //Setting Above 19 Results in Stack Overflow
+	const int samples = 10;
 	const int depth = 20;
+	const int numObjects = 20;
+	const int numFrames = 30;
+	glm::vec3 eye = glm::vec3{ 0, 2, 5 };
+	glm::vec3 lookAt = glm::vec3{ 0, 0, -1 };
+	const glm::vec3 translate = glm::vec3{ 0.2f, 0, 0 };
+	std::vector<Image*> images;
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
@@ -40,25 +47,56 @@ int main(int, char**)
 	}
 
 	Canvas canvas{ renderer, width, height };
-	Image image{ width, height };
-	Camera camera{ glm::vec3{5, 5, 5}, glm::vec3{0, 0, 0}, glm::vec3{0, 1, 0}, 80.0f, &image };
+	//Image image{ width, height };
+	//Camera camera{ glm::vec3{5, 5, 5}, glm::vec3{0, 0, 0}, glm::vec3{0, 1, 0}, 80.0f, &image };
 	Tracer tracer{ samples, depth };
 	Scene scene;
 
-	//scene.Add(new Sphere{ { 2, 2, -4 },	1.0f,	new Lambertian{ { 1, 1, 0 } } });
-	//scene.Add(new Sphere{ { -2, 2, -4 },	1.0f,	new Lambertian{ { 0, 1, 0.5f } } });
-	//scene.Add(new Sphere{ { 5, 2, -4 },	1.2f,	new Metal{ { 1, 0, 1 }, 0.5f } });
-	//scene.Add(new Sphere{ { 0, 0, -6 },	2.0f,	new Metal{ { 0, 1, 1 }, 0.0f } });
+	for (int i = 0; i < numObjects; i++)
+	{
+		glm::vec3 color = glm::rgbColor(glm::vec3{ random(0, 360), 1, 1 });
+		glm::vec3 position = glm::vec3{ random(-12, 15), random(-2, 12), random(0, -10) };
+		float radius = random(0.1f, 1.5f);
+		Material* material = nullptr;
 
-	scene.Add(new Sphere{ { 2, 2, -4 },		1.0f,	new Lambertian{ glm::vec3{ 0, 1, 0 } } });
-	scene.Add(new Sphere{ { 0, 0, -6 },		2.0f,	new Metal{ glm::vec3{ 1, 0, 1 }, 0.1f } });
-	scene.Add(new Sphere{ { -2, -2, -3 },	1.0f,	new Lambertian{ glm::vec3{ 1, 1, 1 } } });
-	scene.Add(new Sphere{ { 0, 0, 0 },		1.0f,	new Dielectric{ glm::vec3{ 0.8f, 0.8f, 1 }, 1.33f } });
+		float fuzz = random(0.1f, 1.0f);
+		float index = random(1.0f, 2.0f);
+
+		switch (rand() % 3)
+		{
+			case 0:
+				material = new Lambertian{ color };
+				break;
+			case 1:
+				material = new Metal{ color, fuzz };
+				break;
+			case 2:
+				material = new Dielectric{ color, index };
+				break;
+		}
+
+		scene.Add(new Sphere{ position, radius, material });
+	}
+
+	//scene.Add(new Sphere{ { 2, 2, -4 },		1.0f,	new Lambertian{ glm::vec3{ 0, 1, 0 } } });
+	//scene.Add(new Sphere{ { 0, 0, -6 },		2.0f,	new Metal{ glm::vec3{ 1, 0, 1 }, 0.1f } });
+	//scene.Add(new Sphere{ { -2, -2, -3 },	1.0f,	new Lambertian{ glm::vec3{ 1, 1, 1 } } });
+	//scene.Add(new Sphere{ { 0, 0, 0 },		1.0f,	new Dielectric{ glm::vec3{ 0.8f, 0.8f, 1 }, 1.33f } });
 	scene.Add(new Plane{ { 0, -2, 0 }, { 0, 1, 0 }, new Metal{ glm::vec3{ 0.5f, 0.5f, 0.5f }, 1.0f } });
 
-	image.Clear({ 0, 0, 0 });
-	tracer.Trace(image, scene, camera);
+	for (int i = 0; i < numFrames; i++)
+	{
+		Image* image = new Image{ width, height };
+		Camera camera{ eye, eye + lookAt, glm::vec3{0, 1, 0}, 80.0f, image };
+		tracer.Trace(*image, scene, camera);
+		images.push_back(image);
+		eye += translate;
+	}
 
+	//image.Clear({ 0, 0, 0 });
+	//tracer.Trace(image, scene, camera);
+
+	int frame = 0;
 	bool quit = false;
 	while (!quit)
 	{
@@ -81,7 +119,9 @@ int main(int, char**)
 
 		canvas.Clear({ 0, 0, 0 });
 		
-		canvas.DrawImage(image);
+		canvas.DrawImage(*images[frame]);
+		frame++;
+		if (frame >= images.size()) frame = 0;
 		canvas.Update();
 
 		SDL_RenderClear(renderer);

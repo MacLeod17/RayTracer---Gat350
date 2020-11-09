@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <glm/gtx/color_space.hpp>
 #include <glm/gtx/compatibility.hpp>
 #include <glm/gtx/norm.hpp>
 #include <glm/vec2.hpp>

@@ -31,7 +31,7 @@ void Tracer::Trace(Image& image, Scene& scene, Camera& camera)
 
 				raycastHit hit;
 
-				color += (scene.Trace(r, 0.001f, FLT_MAX, hit));
+				color += (scene.Trace(r, 0.001f, FLT_MAX, hit, m_depth));
 			}
 			color /= (float)m_samples;
 			image.SetPoint({ x, y }, color);

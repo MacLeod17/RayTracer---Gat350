@@ -3,7 +3,7 @@
 #include "Material.h"
 #include "Math.h"
 
-glm::vec3 Scene::Trace(const ray& r, float tMin, float tMax, raycastHit& hit)
+glm::vec3 Scene::Trace(const ray& r, float tMin, float tMax, raycastHit& hit, int depth)
 {
     bool rayHit = false;
 
@@ -23,9 +23,9 @@ glm::vec3 Scene::Trace(const ray& r, float tMin, float tMax, raycastHit& hit)
         ray scattered;
         glm::vec3 attenuation;
 
-        if (hit.material->Scatter(r, hit, attenuation, scattered))
+        if (depth > 0 && hit.material->Scatter(r, hit, attenuation, scattered))
         {
-            return attenuation * Trace(scattered, tMin, tMax, hit);
+            return attenuation * Trace(scattered, tMin, tMax, hit, depth-1);
         }
         else
         {
